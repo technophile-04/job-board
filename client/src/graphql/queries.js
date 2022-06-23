@@ -46,6 +46,11 @@ export async function getCompanyDetails(companyId) {
                 id
                 description
                 name
+                jobs {
+                    description
+                    id
+                    title
+                }
             }
         }
     `;
