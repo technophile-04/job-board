@@ -22,4 +22,11 @@ export const resolvers = {
 			return company;
 		},
 	},
+
+	Company: {
+		jobs: async (company) => {
+			const jobs = await Job.findAll((job) => job.companyId === company.id);
+			return jobs;
+		},
+	},
 };
