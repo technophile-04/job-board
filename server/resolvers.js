@@ -15,6 +15,13 @@ export const resolvers = {
 			return company;
 		},
 	},
+	Mutation: {
+		createJob: async (_root, { input }) => {
+			const newJob = await Job.create(input);
+
+			return newJob;
+		},
+	},
 	Job: {
 		// graphQL will call it while preparing each job object of jobs by passing it the job
 		company: async (job) => {
