@@ -6,6 +6,8 @@ type Query {
 
 type Mutation {
 	createJob(input: CreateJobInput!): Job
+	deleteJob(jobId: ID!): Job
+	updateJob(input: UpdateJobInput!): Job
 }
 
 # "!" we are telling it is mandatory
@@ -27,4 +29,11 @@ input CreateJobInput {
 	title: String!
 	description: String
 	companyId: ID!
+}
+
+input UpdateJobInput {
+	title: String
+	description: String
+	id: ID!
+	companyId: String
 }

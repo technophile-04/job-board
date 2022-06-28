@@ -21,6 +21,14 @@ export const resolvers = {
 
 			return newJob;
 		},
+		deleteJob: async (_root, { jobId }) => {
+			const job = await Job.delete(jobId);
+			return job;
+		},
+		updateJob: async (_root, { input }) => {
+			const updatedJob = await Job.update(input);
+			return updatedJob;
+		},
 	},
 	Job: {
 		// graphQL will call it while preparing each job object of jobs by passing it the job
