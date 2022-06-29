@@ -33,7 +33,16 @@ app.post('/login', async (req, res) => {
 });
 
 const typeDefs = await readFile('./schema.graphql', 'utf-8');
-const apolloServer = new ApolloServer({ typeDefs, resolvers });
+// GraphQl give us the things like graphQl string or any graphQl arguments but we don't get
+// http-specific info like method or headers that why it called context because its gives access to data thats outside graphQl engine and depends on context we are using it.
+const context = async ({ req, res }) => {
+	if (req.auth) {
+		const user = await User.findById(req.auth.sub);
+		return { user };
+	}
+	return {};
+};
+const apolloServer = new ApolloServer({ typeDefs, resolvers, context });
 
 await apolloServer.start();
 

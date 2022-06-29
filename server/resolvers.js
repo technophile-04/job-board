@@ -16,8 +16,14 @@ export const resolvers = {
 		},
 	},
 	Mutation: {
-		createJob: async (_root, { input }) => {
-			const newJob = await Job.create(input);
+		createJob: async (_root, { input }, context) => {
+			if (!context.user) {
+				throw new Error('Unauthorized');
+			}
+			const newJob = await Job.create({
+				...input,
+				companyId: context.user.companyId,
+			});
 
 			return newJob;
 		},
