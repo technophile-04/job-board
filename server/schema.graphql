@@ -34,5 +34,4 @@ input UpdateJobInput {
 	title: String
 	description: String
 	id: ID!
-	companyId: String
 }
