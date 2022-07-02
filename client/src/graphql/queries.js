@@ -1,11 +1,17 @@
-import { request, gql } from "graphql-request";
+import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
+// import { request } from "graphql-request";
 import { getAccessToken } from "../auth";
 
 const GRAPHQL_URL = "http://localhost:9000/graphql";
 
+const client = new ApolloClient({
+    uri: GRAPHQL_URL,
+    cache: new InMemoryCache(),
+});
+
 export async function getJob() {
     const query = gql`
-        query {
+        query JobsQuery {
             jobs {
                 id
                 description
@@ -17,7 +23,15 @@ export async function getJob() {
         }
     `;
 
-    const { jobs } = await request(GRAPHQL_URL, query);
+    // const { jobs } = await request(GRAPHQL_URL, query);
+
+    // const res = await client.query({query});
+    // console.log("⚡️ ~ file: queries.js ~ line 28 ~ getJob ~ res", res);
+
+    const {
+        data: { jobs },
+    } = await client.query({ query });
+
     return jobs;
 }
 
@@ -36,7 +50,13 @@ export async function getJobDetails(jobId) {
             }
         }
     `;
-    const { job } = await request(GRAPHQL_URL, query, { id: jobId });
+    // const { job } = await request(GRAPHQL_URL, query, { id: jobId });
+    const variables = { id: jobId };
+
+    const {
+        data: { job },
+    } = await client.query({ query, variables });
+
     return job;
 }
 
@@ -56,12 +76,16 @@ export async function getCompanyDetails(companyId) {
         }
     `;
 
-    const { company } = await request(GRAPHQL_URL, query, { id: companyId });
+    // const { company } = await request(GRAPHQL_URL, query, { id: companyId });
+    const variables = { id: companyId };
+    const {
+        data: { company },
+    } = await client.query({ query, variables });
     return company;
 }
 
 export const createJob = async (input) => {
-    const query = gql`
+    const mutation = gql`
         mutation CreateJobMutation($input: CreateJobInput!) {
             job: createJob(input: $input) {
                 id
@@ -70,9 +94,21 @@ export const createJob = async (input) => {
     `;
 
     const variables = { input };
-    const headers = {
-        Authorization: "Bearer " + getAccessToken(),
+    // const headers = {
+    //     Authorization: "Bearer " + getAccessToken(),
+    // };
+
+    // const { job } = await request(GRAPHQL_URL, query, variables, headers);
+
+    const context = {
+        headers: {
+            Authorization: "Bearer " + getAccessToken(),
+        },
     };
-    const { job } = await request(GRAPHQL_URL, query, variables, headers);
+
+    const {
+        data: { job },
+    } = await client.mutate({ mutation, variables, context });
+
     return job;
 };
