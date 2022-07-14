@@ -1,12 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+// import { useCallback, useEffect, useState } from "react";
+// import { getJobDetails } from "../graphql/queries";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { getJobDetails } from "../graphql/queries";
+import { useJob } from "../graphql/hooks";
 
 function JobDetail() {
     const { jobId } = useParams();
+    const { job, loading } = useJob(jobId);
 
-    const [job, setJob] = useState({});
+    /*  
+    WITHOUT HOOKS
+   const [job, setJob] = useState({});
     const [loading, setLoading] = useState(true);
 
     const fetchJob = useCallback(async () => {
@@ -17,7 +21,7 @@ function JobDetail() {
 
     useEffect(() => {
         fetchJob();
-    }, [fetchJob]);
+    }, [fetchJob]); */
 
     if (loading) {
         return <p>Loading...</p>;
